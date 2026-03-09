@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        PATH = "/usr/bin:/bin:${env.PATH}"
+    }
     stages {
         stage('Compile') {
             steps {
