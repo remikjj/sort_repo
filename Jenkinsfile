@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh 'gcc "sort.c" -o "sort"'
+                sh '/usr/bin/gcc "sort.c" -o "sort"'
             }
             
     }
