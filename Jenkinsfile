@@ -4,30 +4,39 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh '/usr/bin/gcc -Wall -Wextra -Wpedantic sort.c -o sort'
+                sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c'
             }
         }
 
         stage('Static Analysis') {
-            parallel {
+            stages {   // używamy stages w środku, żeby zachować kolejność
                 stage('Cppcheck') {
                     steps {
-                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> cppcheck.log || true'
+                        sh 'cppcheck --enable=all --inconclusive --std=c11 sort.c 2> cppcheck.log || true'
                     }
                 }
+
                 stage('Clang Analysis') {
                     steps {
                         sh 'clang --analyze sort.c -Xanalyzer -analyzer-output=text 2> clang.log || true'
                     }
                 }
+
                 stage('Splint') {
                     steps {
                         sh 'splint sort.c 2> splint.log || true'
                     }
                 }
+
+                stage('Cppcheck MISRA') {
+                    steps {
+                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> cppcheck_misra.log || true'
+                    }
+                }
+
                 stage('GCC Warnings') {
                     steps {
-                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc.log || true'
+                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc_warnings.log || true'
                     }
                 }
             }
