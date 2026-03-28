@@ -3,7 +3,7 @@
 int main() {
     int tab[] = {3, 4, 1, 5, 2};
     int n = 5;
-    int x 0;
+    int x = 0;
 
     for (int i=0; i<n-1; i++) {
         for (int j=0; j<n-i-1; j++) {
@@ -19,6 +19,6 @@ int main() {
     for(int i=0; i<5; i++) {
         printf("%d ", tab[i]);
     }
-    
+
     return 0;
 }
