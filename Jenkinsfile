@@ -12,7 +12,7 @@ pipeline {
             parallel {
                 stage('Cppcheck') {
                     steps {
-                        sh 'cppcheck --enable=all --inconclusive --std=c11 sort.c 2> cppcheck.log || true'
+                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> misra.log || true'
                     }
                 }
                 stage('Clang Analysis') {
