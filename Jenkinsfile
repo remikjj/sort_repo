@@ -2,15 +2,6 @@ pipeline {
     agent any
 
     stages {
-        // Nowy etap: Czyszczenie przestrzeni roboczej przed rozpoczęciem pracy
-        stage('Clean Workspace') {
-            steps {
-                cleanWs() 
-                // UWAGA: Jeśli wyskoczy błąd, że nie znaleziono polecenia 'cleanWs', 
-                // użyj wbudowanego polecenia Jenkinsa: deleteDir()
-            }
-        }
-
         stage('Compile') {
             steps {
                 sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c'
@@ -18,7 +9,7 @@ pipeline {
         }
 
         stage('Static Analysis') {
-            stages {   
+            stages {   // używamy stages w środku, żeby zachować kolejność
                 stage('Cppcheck') {
                     steps {
                         sh 'cppcheck --enable=all --inconclusive --std=c11 sort.c 2> cppcheck.log || true'
@@ -39,13 +30,13 @@ pipeline {
 
                 stage('Cppcheck MISRA') {
                     steps {
-                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> cppcheck_misra.log || true'
+                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> misra.log || true'
                     }
                 }
 
                 stage('GCC Warnings') {
                     steps {
-                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc_warnings.log || true'
+                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc.log || true'
                     }
                 }
             }
@@ -58,9 +49,11 @@ pipeline {
         }
     }
 
-    post {
+    post {   // <-- post zawsze na poziomie pipeline
         always {
             archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+
+            cleanWs()
         }
     }
 }
