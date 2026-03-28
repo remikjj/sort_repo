@@ -1,10 +1,10 @@
 pipeline {
     agent any
+
     stages {
         stage('Compile') {
             steps {
-                // kompilacja z GCC, standardowe warningi
-                sh '/usr/bin/gcc -Wall -Wextra -Wpedantic "sort.c" -o "sort"'
+                sh '/usr/bin/gcc -Wall -Wextra -Wpedantic sort.c -o sort'
             }
         }
 
@@ -32,11 +32,6 @@ pipeline {
                 }
             }
         }
-    post {
-        always {
-            archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
-        }
-    }
 
         stage('Run') {
             steps {
@@ -45,9 +40,8 @@ pipeline {
         }
     }
 
-    post {
+    post {   // <-- post zawsze na poziomie pipeline
         always {
-            // zachowaj logi wszystkich linterów jako artefakty
             archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
         }
     }
