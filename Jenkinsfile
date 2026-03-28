@@ -18,7 +18,7 @@ pipeline {
 
                 stage('Clang Analysis') {
                     steps {
-                        sh 'clang --analyze sort.c -Xanalyzer -analyzer-output=text 2'
+                        sh 'clang --analyze sort.c -Xanalyzer -analyzer-output=text'
                     }
                 }
 
