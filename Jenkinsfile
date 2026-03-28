@@ -30,13 +30,13 @@ pipeline {
 
                 stage('Cppcheck MISRA') {
                     steps {
-                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> cppcheck_misra.log || true'
+                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> misra.log || true'
                     }
                 }
 
                 stage('GCC Warnings') {
                     steps {
-                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc_warnings.log || true'
+                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc.log || true'
                     }
                 }
             }
