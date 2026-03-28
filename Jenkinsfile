@@ -9,34 +9,34 @@ pipeline {
         }
 
         stage('Static Analysis') {
-            stages {   // używamy stages w środku, żeby zachować kolejność
+            stages {   
                 stage('Cppcheck') {
                     steps {
-                        sh 'cppcheck --enable=all --inconclusive --std=c11 sort.c 2> cppcheck.log || true'
+                        sh 'cppcheck --enable=all --inconclusive --std=c11 sort.c'
                     }
                 }
 
                 stage('Clang Analysis') {
                     steps {
-                        sh 'clang --analyze sort.c -Xanalyzer -analyzer-output=text 2> clang.log || true'
+                        sh 'clang --analyze sort.c -Xanalyzer -analyzer-output=text 2'
                     }
                 }
 
                 stage('Splint') {
                     steps {
-                        sh 'splint sort.c 2> splint.log || true'
+                        sh 'splint sort.c 2> splint.log'
                     }
                 }
 
                 stage('Cppcheck MISRA') {
                     steps {
-                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> misra.log || true'
+                        sh 'cppcheck --addon=misra.json --enable=style sort.c 2> misra.log'
                     }
                 }
 
                 stage('GCC Warnings') {
                     steps {
-                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc.log || true'
+                        sh '/usr/bin/gcc -Wall -Wextra -Wpedantic -o sort sort.c 2> gcc.log'
                     }
                 }
             }
